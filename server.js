@@ -26,7 +26,6 @@ const botAvatar="https://png.pngtree.com/png-clipart/20220329/ourmid/pngtree-d-r
 
 //Run when client connects
 io.on('connection',socket=>{
-    console.log(socket.id)
     //Join Room
     socket.on('joinRoom',({username,room})=>{
        const user = userJoin(socket.id,username,room)
