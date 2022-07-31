@@ -1,10 +1,9 @@
-const moment  = require('moment')
-function formatMessage(username,text,avatar){
+function formatMessage(username,message,avatar,createdAt){
     return {
         username,
-        text,
-        time:moment().format('h:mm a'),
-        avatar
+        message,
+        avatar,
+        createdAt
     }
 
 }
