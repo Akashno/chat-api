@@ -24,7 +24,7 @@ app.use(cors())
 const server = http.createServer(app)
 
 
-let corsOptions = { origin: ['http://localhost:8080'] }
+let corsOptions = { origin: ['https://singular-sunshine-22e97c.netlify.app'] }
 const io = require('socket.io')(server, {cors:corsOptions });
 
 
