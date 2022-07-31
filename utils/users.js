@@ -10,18 +10,33 @@ const avatars = [
    'https://png.pngtree.com/png-clipart/20220401/ourmid/pngtree-d-rendering-gentleman-male-avatar-with-black-suit-and-red-butterfly-png-image_4521690.png'
 
 ]
+const messages=[
+
+]
 function userJoin(id,username,room){
     var avatar = avatars[Math.floor(Math.random()*avatars.length)];
-
     const user = { id,username,room,avatar}
     users.push(user)
     return user
 
 }
 
+//get all messages
+function getAllMessages(room){
+      const oldMessages = messages.filter(message=>message.room===room)
+      return oldMessages
+}
 //Get current user
-function getCurrentUser(id){
-    return users.find(user=>user.id === id);
+function getCurrentUser(id,msg){
+
+    const user  = users.find(user=>user.id === id);
+    messages.push({
+        room:user.room,
+        username:user.username,
+        avatar:user.avatar,
+        text:msg
+    })
+    return user
 }
 
 function userLeave(id){
@@ -38,5 +53,6 @@ module.exports = {
     userJoin,
     getCurrentUser,
     userLeave,
-    getRoomUsers
+    getRoomUsers,
+    getAllMessages
 }
