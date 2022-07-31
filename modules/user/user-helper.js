@@ -49,7 +49,7 @@ const getCurrentUser = async (socketId) => {
 };
 
 const getRoomUsers = async (room) => {
-  const usersInRoom = await User.find({ room: room   });
+  const usersInRoom = await User.find({ room: room   }).sort({isActive:-1});
   return usersInRoom;
 };
 
