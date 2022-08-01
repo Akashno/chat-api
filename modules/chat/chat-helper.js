@@ -30,10 +30,10 @@ const getAllChats = async (room) => {
             username:"$user.username",
             message:"$message",
             avatar:"$user.avatar",
-            createdAt:"$createdAt"
+           createdAt:"$createdAt"
         }
     }
-  ]).sort({createdAt:1}).limit(50).sort({createdAt:-1});
+  ]).sort({createdAt:-1}).limit(50).sort({createdAt:1});
   return oldMessages;
 };
 module.exports = {
