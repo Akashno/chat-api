@@ -84,7 +84,7 @@ io.on('connection',socket=>{
 
 
 
-const dbUrl = config.dbUrl;
+const dbUrl = process.env.dbUrl || config.dbUrl ;
 var options = {
   keepAlive: true,
   connectTimeoutMS: 30000,
