@@ -5,7 +5,6 @@ const socketio = require('socket.io')
 const formatMessage = require('./utils/messages')
 const { userLeave,getRoomUsers,userJoin,getCurrentUser } = require('./modules/user/user-helper')
 const cors = require('cors')
-const config = require("./config");
 const mongoose = require('mongoose')
 const Room = require('./modules/room/room-model')
 const { getAllChats,createChat } = require('./modules/chat/chat-helper')
@@ -82,9 +81,7 @@ io.on('connection',socket=>{
 
 
 
-
-
-const dbUrl = process.env.dbUrl || config.dbUrl ;
+const dbUrl = process.env.dbUrl  ;
 var options = {
   keepAlive: true,
   connectTimeoutMS: 30000,
@@ -95,7 +92,7 @@ mongoose.connect(dbUrl, options, (err) => { if (err) console.log(err); }); //
 
 //
 
-app.get("/rooms",async (req,res)=>{
+app.get("/rooms",cors(),async (req,res)=>{
     const rooms =await  Room.find({})
     res.json({ rooms })
 
