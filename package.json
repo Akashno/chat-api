@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "dev": " nodemon server"
+    "dev": " nodemon server",
+    "test": " mocha --recursive || true",
+    "testReal": "echo 'Continue if testing db is selected else kill <ctrl> + z' && read message && mocha --recursive || true"
   },
   "author": "Akash no",
   "license": "ISC",
@@ -17,6 +19,8 @@
     "socket.io": "^4.5.1"
   },
   "devDependencies": {
+    "chai": "^4.3.6",
+    "mocha": "^10.0.0",
     "nodemon": "^2.0.19"
   }
 }
