@@ -7,7 +7,7 @@
     "start": "node server",
     "dev": " nodemon server",
     "test": " mocha --recursive || true",
-    "testReal": "echo 'Continue if testing db is selected else kill <ctrl> + z' && read message && mocha --recursive || true"
+    "testReal": "echo 'Continue if testing db is selected else kill <ctrl> + z' && read message && mocha --recursive  || true"
   },
   "author": "Akash no",
   "license": "ISC",

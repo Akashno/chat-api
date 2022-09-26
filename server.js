@@ -1,20 +1,17 @@
-const path = require('path')
 const http = require('http')
 const express = require('express')
-const socketio = require('socket.io')
+const config = require('./config')
 const formatMessage = require('./utils/messages')
 const { userLeave,getRoomUsers,userJoin,getCurrentUser } = require('./modules/user/user-helper')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const Room = require('./modules/room/room-model')
 const { getAllChats,createChat } = require('./modules/chat/chat-helper')
-const { ObjectId } = require('./tools')
 
 
 
+const PORT =   process.env.PORT || 3002;
 
-
-const PORT =   process.env.PORT || 3000;
 const botName = 'ChatCord Bot'
 const botAvatar="https://png.pngtree.com/png-clipart/20220329/ourmid/pngtree-d-rendering-hijab-woman-with-business-outfit-black-suit-and-red-png-image_4518784.png"
 
@@ -23,7 +20,7 @@ app.use(cors())
 const server = http.createServer(app)
 
 
-let corsOptions = { origin: ['https://singular-sunshine-22e97c.netlify.app'] }
+let corsOptions = { origin: ['https://goofy-vue-chat.netlify.app','http://localhost:8081','*'] }
 const io = require('socket.io')(server, {cors:corsOptions });
 
 
@@ -32,8 +29,8 @@ const io = require('socket.io')(server, {cors:corsOptions });
 io.on('connection',socket=>{
     //Join Room
     socket.on('userJoin',async ({username,roomId},callback)=>{
-
        const user =await userJoin(socket.handshake.query.token,username,roomId)
+       socket.join(String(user._id))
        socket.join(String(user.room))
       //Welcome current user
        socket.emit('message',formatMessage(botName,'Welcome to chatcord',botAvatar))
@@ -58,7 +55,7 @@ io.on('connection',socket=>{
     //Listen for chat message 
     socket.on('chatMessage',async (message)=>{
         const chat =await createChat(socket.handshake.query.token,message)
-        io.to(String(chat.room)).emit('message',formatMessage(chat.user.username,chat.message,chat.user.avatar,chat.createdAt))
+        io.to(String(chat.room)).emit('message',formatMessage(chat.user.username,chat.message,chat.user.avatar,chat.createdAt,chat.user.socket))
     })
 
     socket.on('forceDisconnect',()=>{
@@ -68,20 +65,16 @@ io.on('connection',socket=>{
     socket.on('disconnect',async()=>{
         const user =await userLeave(socket.handshake.query.token)
         if(user){
-           io.to(String(user.room)).emit('message',formatMessage(botName,` ${user.username} has left the chat`,botAvatar))
-       let users = await getRoomUsers(String(user.room))
-       io.to(String(user.room)).emit('roomusers',{
-            room:user.room,
-            users:users
-       })
+          io.to(String(user.room)).emit('message',formatMessage(botName,` ${user.username} has left the chat`,botAvatar))
+          let users = await getRoomUsers(String(user.room))
+          io.to(String(user.room)).emit('roomusers',{ room:user.room, users:users })
         }
     })
-
 })
 
 
 
-const dbUrl = process.env.dbUrl  ;
+const dbUrl = process.env.dbUrl || config.dbUrl ;
 var options = {
   keepAlive: true,
   connectTimeoutMS: 30000,
@@ -92,7 +85,7 @@ mongoose.connect(dbUrl, options, (err) => { if (err) console.log(err); }); //
 
 //
 
-app.get("/rooms",cors(),async (req,res)=>{
+app.get("/rooms",async (req,res)=>{
     const rooms =await  Room.find({})
     res.json({ rooms })
 
